@@ -16,14 +16,7 @@ mongoose.connection
 let db = mongoose.connection
 let {Schema} = mongoose
 
-let userSchema = Schema({
-    avatar: String,
-    fullname: String,
-    phone: String
-})
-
-
-let User = db.model('User', userSchema)
+let User = db.model('User', require('./schemas/user.js'))
 
 // [EXPORTS]
 module.exports = db.modelNames
