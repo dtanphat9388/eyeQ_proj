@@ -4,8 +4,8 @@ mongoose.Promise = global.Promise
 
 
 // [CONNECTION]
-let {DB_path} = require('../config/database')
-mongoose.connect(DB_path)
+let {DB_path, DB_config} = require('../config')
+mongoose.connect(DB_path, DB_config)
 mongoose.connection
     .on('error', error => console.log(error.message))
     .once('open', () => console.log('ket noi thanh cong'))

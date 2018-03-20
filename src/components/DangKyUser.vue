@@ -1,5 +1,6 @@
 <template>
     <div class="compDangKyUser">
+        <img id='Test' src="" alt="">
         <NavForm class="camera">
             <template slot="header">
                 Camera chụp hình
@@ -24,30 +25,49 @@
                     <div class="userInput">
                         <div>
                             <label for="hoten">Họ tên: </label>
-                            <input type="text" id="hoten" placeholder="Nhập họ tên ...">
+                            <input type="text" id="hoten" v-model="userInfo.hoten" placeholder="Nhập họ tên ...">
                         </div>
                         <div>
                             <label for="sdt">Số điện thoại: </label>
-                            <input type="text" id="sdt" placeholder="Nhập số điện thoại ...">
+                            <input type="text" id="sdt" v-model="userInfo.sdt" placeholder="Nhập số điện thoại ...">
                         </div>
                     </div>
                 </div>
             </template>
             <template slot="footer">
-                <button>Đăng ký</button>
+                <button @click="submit_DangKyUser">Đăng ký</button>
             </template>
         </NavForm>
     </div>
 </template>
 
 <script>
-
+import axios from '../config/io.js'
 import NavForm from './NavForm.vue'
+
 export default {
+    data: () => ({
+        userInfo: {
+            avatar: null,
+            hoten: '',
+            sdt: ''
+        }
+    }),
+
     components: {NavForm},
 
     methods: {
-        // helper function
+
+        submit_DangKyUser(){
+
+            let formData = new FormData()
+            formData.append("hoten", this.userInfo.hoten)
+            formData.append("sdt", this.userInfo.sdt)
+            formData.append("avatar", this.userInfo.avatar, `avatar_${this.userInfo.sdt}.jpeg`)
+
+            axios.post('/dangky', formData).then(data => console.log(data))
+        },
+
         takepicture() {
             var video = document.getElementById('video');
             var canvas = document.getElementById('canvas');
@@ -56,7 +76,15 @@ export default {
 
             var context = canvas.getContext('2d');
             context.drawImage(video, 0, 0, width, height);
+            canvas.toBlob(this.savePicture, 'image/png', 1)
+            // let data = canvas.toDataURL()
+            // this.savePicture(data)
+        },
+
+        savePicture(data){
+            this.userInfo.avatar = data
         }
+
     },
   
 
@@ -66,10 +94,7 @@ export default {
         var video = document.getElementById('video');
         if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
-                console.log(stream)
                 video.src = window.URL.createObjectURL(stream);
-
-                
                 video.play();
             });
         }
