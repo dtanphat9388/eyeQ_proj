@@ -9,7 +9,7 @@
                 <video id="video" width="320" height="240" autoplay></video>
             </template>
             <template slot="footer">
-                <button @click="takepicture">Chụp Hình</button>
+                <button @click="takePicture">Chụp Hình</button>
             </template>
         </NavForm>
 
@@ -25,7 +25,7 @@
                     <div class="userInput">
                         <div>
                             <label for="hoten">Họ tên: </label>
-                            <input type="text" id="hoten" v-model="userInfo.hoten" placeholder="Nhập họ tên ...">
+                            <input type="text" id="hoten" v-model="userInfo.hoten" placeholder="Nhập họ tên ..." required>
                         </div>
                         <div>
                             <label for="sdt">Số điện thoại: </label>
@@ -35,7 +35,10 @@
                 </div>
             </template>
             <template slot="footer">
-                <button @click="submit_DangKyUser">Đăng ký</button>
+                <button 
+                    @click="submit_DangKyUser"
+                    :disabled="isFullFillForm">Đăng ký
+                </button>
             </template>
         </NavForm>
     </div>
@@ -47,12 +50,24 @@ import NavForm from './NavForm.vue'
 
 export default {
     data: () => ({
+        camera: null,
         userInfo: {
             avatar: null,
             hoten: '',
             sdt: ''
         }
     }),
+
+    computed: {
+        isFullFillForm() {
+            let arr = Object.values(this.userInfo)
+            
+            return arr.some(value => {
+                console.log(!value)
+                return !value
+            } )
+        }
+    },
 
     components: {NavForm},
 
@@ -64,11 +79,13 @@ export default {
             formData.append("hoten", this.userInfo.hoten)
             formData.append("sdt", this.userInfo.sdt)
             formData.append("avatar", this.userInfo.avatar, `avatar_${this.userInfo.sdt}.jpeg`)
-
-            axios.post('/dangky', formData).then(data => console.log(data))
+            
+            axios.post('/dangky', formData)
+                .then(res => console.log(res.data))
+                .then(() => this.stopCamera())
         },
 
-        takepicture() {
+        takePicture() {
             var video = document.getElementById('video');
             var canvas = document.getElementById('canvas');
             let width = canvas.clientWidth
@@ -77,27 +94,34 @@ export default {
             var context = canvas.getContext('2d');
             context.drawImage(video, 0, 0, width, height);
             canvas.toBlob(this.savePicture, 'image/png', 1)
-            // let data = canvas.toDataURL()
-            // this.savePicture(data)
         },
 
         savePicture(data){
             this.userInfo.avatar = data
-        }
+        },
 
+        startCamera(){
+            var video = document.getElementById('video');
+            if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+
+                let camera = navigator.mediaDevices.getUserMedia({ video: true })
+                camera.then(function(stream) {
+                    video.src = window.URL.createObjectURL(stream);
+                    video.play();   
+                });
+                this.camera = camera
+            }
+        },
+
+        stopCamera(){
+            this.camera.then(stream => stream.getTracks()[0].stop())
+        }
     },
   
 
     //hooks
     mounted(){
-        // [get laptop camera]
-        var video = document.getElementById('video');
-        if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-            navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
-                video.src = window.URL.createObjectURL(stream);
-                video.play();
-            });
-        }
+        this.startCamera()
     }
 }
 </script>
