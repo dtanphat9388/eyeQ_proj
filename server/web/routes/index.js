@@ -2,16 +2,16 @@ var express = require('express');
 var router = express.Router();
 let upload = require('../middlewares/multer.js')
 let db = require(process.cwd() + '/database')
+let middlewaresPath = '../middlewares/indexRoutes'
 
 
 
 router.use(function(req, res, next){
   res.set('Access-Control-Allow-Origin',"http://localhost:8080")
+  res.set('Access-Control-Allow-Headers', '*')
   next()
 })
 
-// router.use(express.urlencoded({extended: false}))
-// router.use(express.json())
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -19,31 +19,11 @@ router.get('/', function(req, res, next) {
 });
 
 
-router.post('/dangky', upload.single('avatar'), function(req, res, next){
-  let { hoten, sdt } = req.body
-  let avatar = req.file.originalname
-  db.models.User.create({avatar, hoten, sdt})
-    .then( user => console.log(user))
-    .then( () => res.send('ok'))
-    .catch( err => res.send({error: err.message}))
-})
+router.post('/dangky', upload.single('avatar'), require(middlewaresPath + '/dangky.js')(db) )
+router.post('/getUsers', require(middlewaresPath + '/getUsers.js')(db) )
+router.post( '/updateUser', require(middlewaresPath + '/updateUser.js')(db) )
+router.post('/deleteUser', require(middlewaresPath + '/deleteUser.js')(db) )
 
-
-router.post('/getUsers', (req, res, next) => {
-  db.models.User.find()
-    .then( users => res.send(users))
-    .catch( err => res.send({error: err.message}))
-})
-
-router.post('/updateUser', (req, res) => {
-  console.log(req.body)
-  res.send(true)
-})
-
-
-// router.post('/updateUser', (req, res) => {
-
-// })
 
 
 module.exports = router;

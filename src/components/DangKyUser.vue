@@ -1,46 +1,48 @@
 <template>
     <div class="compDangKyUser">
-        <img id='Test' src="" alt="">
-        <NavForm class="camera">
-            <template slot="header">
-                Camera chụp hình
-            </template>
-            <template slot="body">
-                <video id="video" width="320" height="240" autoplay></video>
-            </template>
-            <template slot="footer">
-                <button @click="takePicture">Chụp Hình</button>
-            </template>
-        </NavForm>
+        <div class="title">Chụp hình đăng ký</div>
+        <div class="content">
+            <NavForm class="camera">
+                <template slot="header">
+                    Camera chụp hình
+                </template>
+                <template slot="body">
+                    <video id="video" width="320" height="240" autoplay></video>
+                </template>
+                <template slot="footer">
+                    <button @click="takePicture">Chụp Hình</button>
+                </template>
+            </NavForm>
 
-        <NavForm class="form">
-            <template slot="header">
-                Thêm thông tin khách hàng
-            </template>
-            <template slot="body">
-                <div class="submitForm">
-                    <div>
-                        <canvas id="canvas" width="150" height="120"></canvas>
-                    </div>
-                    <div class="userInput">
+            <NavForm class="form">
+                <template slot="header">
+                    Thêm thông tin khách hàng
+                </template>
+                <template slot="body">
+                    <div class="submitForm">
                         <div>
-                            <label for="hoten">Họ tên: </label>
-                            <input type="text" id="hoten" v-model="userInfo.hoten" placeholder="Nhập họ tên ..." required>
+                            <canvas id="canvas" width="150" height="120"></canvas>
                         </div>
-                        <div>
-                            <label for="sdt">Số điện thoại: </label>
-                            <input type="text" id="sdt" v-model="userInfo.sdt" placeholder="Nhập số điện thoại ...">
+                        <div class="userInput">
+                            <div>
+                                <label for="hoten">Họ tên: </label>
+                                <input type="text" id="hoten" v-model="userInfo.hoten" placeholder="Nhập họ tên ..." required>
+                            </div>
+                            <div>
+                                <label for="sdt">Số điện thoại: </label>
+                                <input type="text" id="sdt" v-model="userInfo.sdt" placeholder="Nhập số điện thoại ...">
+                            </div>
                         </div>
                     </div>
-                </div>
-            </template>
-            <template slot="footer">
-                <button 
-                    @click="submit_DangKyUser"
-                    :disabled="isFullFillForm">Đăng ký
-                </button>
-            </template>
-        </NavForm>
+                </template>
+                <template slot="footer">
+                    <button 
+                        @click="submit_DangKyUser"
+                        :disabled="isFullFillForm">Đăng ký
+                    </button>
+                </template>
+            </NavForm>
+        </div>
     </div>
 </template>
 
@@ -127,8 +129,13 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-
-    .compDangKyUser
+.compDangKyUser
+    .title
+        font-size 30px !important
+        font-weight bolder
+        padding 20px 0px
+        
+    .content
         display flex
         justify-content space-between
         .compNavForm

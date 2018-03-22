@@ -19,7 +19,6 @@ let {Schema} = mongoose
 let User = db.model('User', require('./schemas/user.js'))
 
 
-
 // [EXPORTS]
 module.exports = db
 
