@@ -84,7 +84,7 @@ export default {
             
             axios.post('/dangky', formData)
                 .then(res => console.log(res.data))
-                .then(() => this.stopCamera())
+                // .then(() => this.stopCamera())
         },
 
         takePicture() {
@@ -124,6 +124,10 @@ export default {
     //hooks
     mounted(){
         this.startCamera()
+    },
+
+    destroyed(){
+        this.stopCamera()
     }
 }
 </script>
